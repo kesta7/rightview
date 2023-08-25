@@ -1,0 +1,98 @@
+<script>
+const product1NameInput = document.getElementById("product-1-name");
+const product2NameInput = document.getElementById("product-2-name");
+const compareProductsButton = document.getElementById("compare-products");
+const productComparisonResults = document.getElementById("product-comparison-results");
+
+compareProductsButton.addEventListener("click", async function() {
+const product1Name = product1NameInput.value;
+const product2Name = product2NameInput.value;
+
+// Get the data for the two products.
+const product1Data = await getProductData(product1Name);
+const product2Data = await getProductData(product2Name);
+
+// Create a table of the comparison results.
+const table = document.createElement("table");
+table.innerHTML = `
+<tr>
+<th>Feature</th>
+<th>Product 1</th>
+<th>Product 2</th>
+</tr>
+<tr>
+<td>Price</td>
+<td><span class="math-inline">\{product1Data\.price\}</td\>
+<td\></span>{product2Data.price}</td>
+</tr>
+<tr>
+<td>Rating</td>
+<td><span class="math-inline">\{product1Data\.rating\}</td\>
+<td\></span>{product2Data.rating}</td>
+</tr>
+<tr>
+<td>Features</td>
+<td><span class="math-inline">\{product1Data\.features\}</td\>
+<td\></span>{product2Data.features}</td>
+</tr>
+</table>
+
+// Create the filters.
+const filterInputs = document.querySelectorAll(".filter-input");
+for (const filterInput of filterInputs) {
+filterInput.addEventListener("change", async function() {
+const filterValue = filterInput.value;
+
+// Update the results.
+const filteredResults = await getFilteredResults(product1Data, product2Data, filterValue);
+
+productComparisonResults.innerHTML = "";
+for (const product of filteredResults) {
+const row = document.createElement("tr");
+for (const [key, value] of Object.entries(product)) {
+const cell = document.createElement("td");
+cell.textContent = value;
+row.appendChild(cell);
+}
+productComparisonResults.appendChild(row);
+}
+});
+}
+
+// Create the graphs.
+const graphs = [];
+for (const feature of ["gpuPerformance", "batteryLife"]) {
+const graph = new Chart(
+document.getElementById(`<span class="math-inline">\{feature\}\-graph\`\),
+\{
+type\: "line",
+data\: \{
+labels\: \["Product 1", "Product 2"\],
+datasets\: \[
+\{
+label\: feature,
+data\: \[product1Data\[feature\], product2Data\[feature\]\],
+borderColor\: "blue"
+\}
+\]
+\},
+options\: \{
+title\: \`</span>{feature} Comparison`
+}
+});
+graphs.push(graph);
+}
+
+productComparisonResults.appendChild(table);
+for (const graph of graphs) {
+productComparisonResults.appendChild(graph.canvas);
+}
+});
+
+async function getProductData(productName) {
+// Get the data from Bard AI.
+const data = await fetch(`https://bard.ai/api/product/` + productName);
+const json = await data.json();
+return json;
+}
+</script>
