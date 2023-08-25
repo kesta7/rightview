@@ -4,7 +4,7 @@ const product2NameInput = document.getElementById("product-2-name");
 const compareProductsButton = document.getElementById("compare-products");
 const productComparisonResults = document.getElementById("product-comparison-results");
 
-compareProductsButton.addEventListener("click", async function() {
+compareProductsButton.addEventListener("click", async function() 
 const product1Name = product1NameInput.value;
 const product2Name = product2NameInput.value;
 
